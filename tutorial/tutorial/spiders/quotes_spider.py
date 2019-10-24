@@ -19,10 +19,10 @@ class QuotesSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        quote = Quote()
         quotes_selectors = response.css("div.quote")
 
         for selector in quotes_selectors:
+            quote = Quote()
 
             quote["text"] = selector.css("span.text::text").extract_first()
             quote["author"] = selector.css("small.author::text").extract_first()
