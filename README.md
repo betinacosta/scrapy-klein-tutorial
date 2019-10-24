@@ -6,10 +6,11 @@ Hoje vamos desenvolver uma API para buscar frases por tags no site http://quotes
 
 ### Exemplo
 
+```sh
+`$ curl -X POST http://localhost:8080/search -H 'Content-Type: application/json' -H 'Postman-Token: 8990960a-fda0-4902-9594-12e9b56d88f2' -H 'cache-control: no-cache' -d '{"tag":"love"}'`
 ```
 
-
-```
+`>> [{"text": "\u201cThere are only two ways to live your life. One is as though nothing is a miracle. The other is as though everything is a miracle.\u201d", "author": "Albert Einstein"}]`
 
 ## Pré-Requisitos
 
@@ -444,13 +445,24 @@ def return_spider_output(output):
     return _encoder.encode(output)
 ```
 
+Não se esqueça de adicionar os imports!
+
+```py
+from scrapy.utils.serialize import ScrapyJSONEncoder
+import json
+
+import app
+from spider_runner import SpiderRunner
+from tutorial.tutorial.spiders.quotes_spider import QuotesSpider
+```
+
 Para finalizar vamos executar nosso projeto em uma aba no terminal:
 
 `$ python app.py`
 
 E rodar um curl passando uma tag como parâmetro!
 
-`$ curl -X POST http://localhost:8080/search -H 'Content-Type: application/json' -H 'Postman-Token: 8990960a-fda0-4902-9594-12e9b56d88f2' -H 'cache-control: no-cache' -d '{"tag":"poetry"}'`
+`$ curl -X POST http://localhost:8080/search -H 'Content-Type: application/json' -H 'Postman-Token: 8990960a-fda0-4902-9594-12e9b56d88f2' -H 'cache-control: no-cache' -d '{"tag":"love"}'`
 
 Pronto! Você tem uma API Spider rodando!
 
@@ -458,7 +470,11 @@ Pronto! Você tem uma API Spider rodando!
 
 Há diversas melhorias que podem ser feitas, vou listar algumas delas como formas de expandir o projeto e dar continuidade ao aprendizado:
 
-Viu algo que pode melhorar nesse tutorial? Não exite em abrir um PR! Aproveita que ainda dá tempo de garantir a Hacktobertfest!
+- **Testes!** Nesse tutorial nós usamos o famoso TDD (Teste Depois do Deploy). Isso não é muito legal. Uma boa forma de melhorar esse código é adicionando testes nele. Uma forma de testar nosso spider unitariamente é utilizando stubs para as páginas.
+
+- **Tratamento de Erros**. Nosso código está considerando apenas o caminho feliz. É bom adicionarmos tratamentos de erros para quando não encontrarmos alguma tag por exemplo.
+
+Viu algo que pode melhorar nesse tutorial? Não exite em abrir um PR! Aproveita que ainda dá tempo de garantir a Hacktoberfest!
 
 ## Contato
 
