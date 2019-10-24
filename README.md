@@ -32,11 +32,11 @@ Scrapy (se pronuncia iscreipi - sim eu também falei errado a vida toda) é um w
 ### Por que usar o Scrapy?
 
 - Scrapy é uma ferramenta de código aberta e gratuita para uso.
-- É fácil de construir e escalar para projetos grande de crawling.
+- É fácil de construir e escalar para projetos grandes de crawling.
 - Possui uma ferramenta que o acompanha chamada Selectors, para extração de dados de sites.
 - Lida com chamadas de maneira assíncrona e rápida.
 
-Esse último ponto vai ser importante para nós no futuro
+Esse último ponto vai ser importante para nós no futuro.
 
 ### Mãos a obra
 
@@ -50,7 +50,7 @@ Esse último ponto vai ser importante para nós no futuro
 
 `make setup`
 
-Isso irá criar, ativar e instalar tanto o Scrapy quanto o Klein em um virtualenv para podermos utilziar. Caso tudo corra bem, você deve ver algo parecido com isso no seu terminal:
+Isso irá criar, ativar e instalar tanto o Scrapy quanto o Klein em um virtualenv para podermos utilizar. Caso tudo corra bem, você deve ver algo parecido com isso no seu terminal:
 
 ![imagem mostrando o nome do ambiente virtual entre parenteses antes do nome do repositório significando que ele foi ativado ](img/virtualenv.png)
 
@@ -79,7 +79,7 @@ Iremos nos aprofundar mais nesses arquivos conforme a necessidade surgir durante
 
 Spiders são classes que você define e que o Scrapy utiliza para fazer crawling das informações nos sites.
 
-Vamos criar um arquivo chamado `quotes_spider.py` dentro da pasta `tutorial/tutorial/spiders/quotes_spider.py` com o seguinte conteúdo:
+Vamos criar um arquivo chamado `quotes_spider.py` dentro da pasta `tutorial/tutorial/spiders` com o seguinte conteúdo:
 
 ```python
 import scrapy
@@ -99,13 +99,19 @@ class QuotesSpider(scrapy.Spider):
         self.log(">>>>>>>>>>>> " + response.url + " <<<<<<<<<<<<<<")
 ```
 
-Ok, o que está acontecendo nesse arquivo? O método `start_requests` define (como o nome sugere) por onde o nosso spider vai começar suas atividades no site ou sites definidos na variável `urls` e qual método aplicar nesses sites, definidos na `callback`. 
+Ok, o que está acontecendo nesse arquivo? O método `start_requests` define (como o nome sugere) por onde o nosso spider vai começar suas atividades no site, ou sites, definidos na variável `urls` e qual método aplicar nesses sites, definidos na `callback`. 
 
-O que estamos fazendo no método parse no momento é simplesmente logar a url do site visitado pelo nosso spider, mas futuramente iramos colher informações da página.
+O que estamos fazendo no método parse no momento é simplesmente logar a url do site visitado pelo nosso spider, mas futuramente iremos colher informações da página.
 
-Para rodar a nossa spider vamos no entra no projeto e executar o spider:
+Para rodar a nossa spider vamos entrar no projeto e executar o spider:
 
 `$ cd tutorial`
+
+Caso você esteja dentro da pasta `spiders`, você precisa voltar um nível acima para estar dentro da pasta `tutorial`, então digite
+
+`$ cd ..`
+
+A partir dai podemos digitar
 
 `$ scrapy crawl quotes`
 
@@ -113,7 +119,9 @@ A nossa mensagem super original junto com a url do site deve ter sido logada no 
 
 #### Entendo a página
 
-Antes de começarmos a colher informações com o nosso spider, precisamos entender melhor a estrutura da página da qual queremos colher informações e nesses momentos precisaremos de um pouco de entendimento de dois dos quatro cavaleiros do apocalipse: HTML e CSS. A forma como iremos colher as informações que necessitamos do site será através de seletores. Vamos dar uma inspecionada no site e ver onde está localizada.
+Antes de começarmos a colher informações com o nosso spider, precisamos entender melhor a estrutura da página da qual queremos colher informações e nesse momento precisaremos de um pouco de entendimento de dois dos quatro cavaleiros do apocalipse: HTML e CSS. A forma como iremos colher as informações que necessitamos do site será através de seletores. Vamos dar uma inspecionada no site e ver onde está localizada.
+
+Lembrando que a página é http://quotes.toscrape.com/
 
 Vamos começar tentando localizar o texto `Quotes to Scrape`. Quando você inspecionar a página verá que ele se encontra dentro do `a` dentro do `h1` que se encontra dentro de uma `div` com a classe `col-md-8`. Como mostra a imagem abaixo:
 
@@ -213,7 +221,7 @@ Uma pausa para descobrir como obter a informação do autor. Fique a vontade par
 
 Beleza, se tudo der certo (deu sim, fé no pai), nós já temos todas as informações que precisamos. Agora vamos retornar essas informações. Para isso, vamos abrir o arquivo `tutorial/tutorial/items.py` e criar um Item. 
 
-Para definir uma saída formatada o Scrapy oferece a classe Item. Objetos do tipo Item são simples containers para coletar os dados. Eles oferencem uma API parecida com um dicionário do Python com uma linguagem conveniente para declarar seus campos disponíveis.
+Para definir uma saída formatada o Scrapy oferece a classe Item. Objetos do tipo Item são simples containers para coletar os dados. Eles oferecem uma API parecida com um dicionário do Python com uma linguagem conveniente para declarar seus campos disponíveis.
 
 ```python
 import scrapy
@@ -292,7 +300,7 @@ Pronto! Agora se rodarmos o nosso spider com `scrapy crawl quotes` vamos ver que
 
 ![imagem mostrando o terminal com as informações sobre as citações](img/quotes-terminal.png)
 
-Para finalizar o nosso crawler com chave de ouro, temos um outro detalhe importante para verificar: paginação. É necessário "repetir" esse procedimento para as próximos páginas de citações caso elas existam. Para isso, vamos adicionar uma lógica de paginação depois do nosso `for` e adicionar a variável `start_urls` no nosso `__init__`. Essa variável é necessária para que o método `response.urljoin`, utilizado na paginação, consiga se achar corretamente.
+Para finalizar o nosso crawler com chave de ouro, temos um outro detalhe importante para verificar: paginação. É necessário "repetir" esse procedimento para as próximas páginas de citações, caso elas existam. Para isso, vamos adicionar uma lógica de paginação depois do nosso `for` e adicionar a variável `start_urls` no nosso `__init__`. Essa variável é necessária para que o método `response.urljoin`, utilizado na paginação, consiga se achar corretamente.
 
 ```python
 import scrapy
@@ -372,7 +380,7 @@ curl -X GET \
   http://localhost:8080/
 ```
 
-Agora vamos criar o endpoint para enviar uma tag parar ser pesquisada:
+Agora vamos criar o endpoint para enviar uma tag para ser pesquisada:
 
 ```py
 from klein import Klein
@@ -394,7 +402,7 @@ app.run("localhost", 8080)
 
 ### Spider Runner
 
-Agora vamos criar um runner para o nosso spider. Isso ira possibilitar a execução programática do nosso spider. Para isso vamos criar o arquivo `spider_runner.py` no mesmo nível do app.py
+Agora vamos criar um runner para o nosso spider. Isso irá possibilitar a execução programática do nosso spider. Para isso vamos criar o arquivo `spider_runner.py` no mesmo nível do app.py
 
 ```python
 class SpiderRunner(CrawlerRunner):
@@ -453,7 +461,7 @@ def get_quotes(request):
     return deferred
 ```
 
-...e criar a callback que passamos parra o `deferred`. Essa callback é necessária para fazer o encoding correto do json.
+...e criar a callback que passamos para o `deferred`. Essa callback é necessária para fazer o encoding correto do json.
 
 ```py
 def return_spider_output(output):
@@ -496,7 +504,7 @@ Há diversas melhorias que podem ser feitas, vou listar algumas delas como forma
 
 - **Buscar mais de uma Tag**. No momento suportamos a busca apenas de uma tag. Que tal procuramos por mais de uma tag?
 
-- **Retornar detalhes do Autor**. Você pode tentar retornar mais detalhes do autor junto com as frases
+- **Retornar detalhes do Autor**. Você pode tentar retornar mais detalhes do autor junto com as frases.
 
 - **Brincar com a `http://books.toscrape.com/`**. Essa é uma livraria fictícia muito boa para fazer scraping. Você pode tentar buscar todos os livros de um determinado gênero dessa vez...
 
