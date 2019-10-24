@@ -19,18 +19,18 @@ Hoje vamos desenvolver uma API para buscar frases por tags no site http://quotes
 
 ## Desenvolvendo o Crawler
 
-Para desenvolver o nosso crawler nós vamos utilizar o Scrapy e o site fictício http://books.toscrape.com/ pertencente ao [Web Scraping Sandbox](http://toscrape.com/) do Scrapinghub.
+Para desenvolver o nosso crawler nós vamos utilizar o Scrapy e o site fictício http://quotes.toscrape.com/ pertencente ao [Web Scraping Sandbox](http://toscrape.com/) do Scrapinghub.
 
 ### O que é o Scrapy?
 
-Scrapy (pronounced skray-pee)[1] is a free and open source web crawling framework, written in Python. Originally designed for web scraping, it can also be used to extract data using APIs or as a general purpose web crawler.[2] It is currently maintained by Scrapinghub Ltd., a web scraping development and services company.
+Scrapy (se pronuncia iscreipi) é um web crawling framework de código aberto e gratuito, escrito em Python. Originalmente projetado para fazer web scraping, também pode ser usar para extração de dados de APIs ou como um web crawler de propósito geral. É mantido por Scrapinghub Ltda, uma empresa de serviços e desenvolvimento de web scraping.
 
 ### Por que usar o Scrapy?
 
-- Scrapy is an open source and free to use framework.
-- It is easier to build and scale large crawling projects.
-- It has a built-in mechanism called Selectors, for extracting the data from websites.
-- It handles the requests asynchronously and it is fast.
+- Scrapy é uma ferramenta de código aberta e gratuita para uso.
+- É fácil de construir e escalar para projetos grande de crawling.
+- Possui uma ferramenta que o acompanha chamada Selectors, para extração de dados de sites.
+- Lida com chamadas de maneira assíncrona e rápida.
 
 ### Mãos a obra
 
@@ -40,7 +40,7 @@ Scrapy (pronounced skray-pee)[1] is a free and open source web crawling framewor
 
 `$ git clone https://github.com/betinacosta/scrapy-klein-tutorial.git`
 
-2. Dento da pasta rode o seguinte comando:
+2. Dentro da pasta do projeto rode o seguinte comando:
 
 `make setup`
 
@@ -60,20 +60,20 @@ Para testar que o Scrapy foi instalado corretamente, rode o comando abaixo para 
 
 Esse comando gerou os seguintes arquivos:
 
-- **scrapy.cfg**: deploy configuration file
-- **items.py**: project items definition file
-- **middlewares.py** :project middlewares file
-- **pipelines.py**: project pipelines file
-- **settings.py**: project settings file
-- **spiders/**: a directory where you'll later put your spiders
+- **scrapy.cfg**: arquivo de configurações de deploy
+- **items.py**: arquivo de definição dos itens do projeto
+- **middlewares.py** : arquivo de middlewares do projeto
+- **pipelines.py**: arquivo de pipelines do projeto
+- **settings.py**: arquivo de configurações do projeto
+- **spiders/**: uma pasta onde serão colocados os spiders mais tarde
 
 Iremos nos aprofundar mais nesses arquivos conforme a necessidade surgir durante o tutorial.
 
 #### Criando nosso primeiro spider
 
-Spiders are classes that you define and that Scrapy uses to scrape information from a website. 
+Spiders são classes que você define e que o Scrapy utiliza para fazer crawling das informações nos sites.
 
-Vamos criar um arquivo chamado `quotes_spider.py` dentro da pasta `tutorial/tutorial/spiders` com o seguinte conteúdo:
+Vamos criar um arquivo chamado `quotes_spider.py` dentro da pasta `tutorial/tutorial/spiders/quotes_spider.py` com o seguinte conteúdo:
 
 ```python
 import scrapy
@@ -106,7 +106,7 @@ A nossa mensagem super original junto com a url do site deve ter sido logada no 
 
 #### Entendo a página
 
-Antes de começarmos a colher informações com o nosso spider, precisamos entender melhor a estrutura da página da qual queremos colher informações e nesses momentos precisaremos de um pouco de entendimento de dois dos quatro cavaleiros do apocalipse: HTML e CSS. A forma como iremos colher as informações que necessitamos do site será através de selectors. Vamos dar uma inspecionada no site e ver onde está localizada.
+Antes de começarmos a colher informações com o nosso spider, precisamos entender melhor a estrutura da página da qual queremos colher informações e nesses momentos precisaremos de um pouco de entendimento de dois dos quatro cavaleiros do apocalipse: HTML e CSS. A forma como iremos colher as informações que necessitamos do site será através de seletores. Vamos dar uma inspecionada no site e ver onde está localizada.
 
 Vamos começar tentando localizar o texto `Quotes to Scrape`. Quando você inspecionar a página verá que ele se encontra dentro do `a` dentro do `h1` que se encontra dentro de uma div com a classe `col-md-8`. Como mostra a imagem abaixo:
 
@@ -114,7 +114,7 @@ Vamos começar tentando localizar o texto `Quotes to Scrape`. Quando você inspe
 
 Para testar se conseguimos selecionar esse texto através da classe e da tag, vamos utilizar uma ferramenta muito util do scrapy: o scrapy shell:
 
-`$ scrapy shell http://books.toscrape.com/`
+`$ scrapy shell http://quotes.toscrape.com/`
 
 Esse comando irá baixar a página e nos fornecer um objeto `response` que nos permitirá fazer algumas operações. Para verificar se conseguimos selecionar o texto que desejamos, vamos executar:
 
@@ -126,7 +126,7 @@ Funcionou \o/
 
 Ok, mas que porra é essa? 
 
-`response.css()` é o que utilizamos para selecionar elementos da página com base no css. Ele deve receber o caminho para o elemento desejado.
+`response.css()` é o que utilizamos para selecionar elementos da página com base em um seletor css. Ele deve receber o caminho para o elemento desejado.
 
 `div.page-header>h1>a::text` diz que queremos o texto do `a` que está dentro do `h1` que se encontra dentro da `div` que possui a classe `col-md-8`
 
@@ -144,7 +144,7 @@ Obs.: Há alguns problemas com essa abordagem, como por exemplo ser baseada no f
 
 Nesse primeiro momento, vamos assumir uma tag fixa. Posteriormente, receberemos a tag como parâmetro na nossa API.
 
-```py
+```python
 import scrapy
 
 
@@ -206,7 +206,7 @@ Uma pausa para descobrir como obter a informação do autor. Fique a vontade par
 
 Beleza, se tudo der certo (deu sim, fé no pai), nós já temos todas as informações que precisamos. Agora vamos retornar essas informações. Para isso, vamos abrir o arquivo `tutorial/tutorial/items.py` e criar um Item. 
 
-To define common output data format Scrapy provides the Item class. Item objects are simple containers used to collect the scraped data. They provide a dictionary-like API with a convenient syntax for declaring their available fields.
+Para definir uma saída formatada o Scrapy oferece as Item classes. Objetos do tipo Item são simples containers para coletar os dados. Eles oferencem uma API parecida com um dicionário do Python com uma linguagem conveniente para declarar seus campos disponíveis.
 
 ```python
 import scrapy
@@ -247,7 +247,7 @@ class QuotesSpider(scrapy.Spider):
             quote["author"] = seu_codigo_bonitao
 ```
 
-Beleza e como retornamos isso? A Scrapy spider typically generates many dictionaries containing the data extracted from the page. To do that, we use the yield Python keyword in the callback.
+Beleza e como retornamos isso? A spider do Scrapy costuma gerar dicionários contendo os dados extraídos da página. Para fazer isso nós usamo o `yield` do Python no callback.
 
 ```python
 import scrapy
@@ -272,7 +272,7 @@ class QuotesSpider(scrapy.Spider):
         quotes_selectors = response.css("div.quote")
 
         for selector in quotes_selectors:
-
+            quote = Quote()
             quote["text"] = selector.css("span.text::text").extract_first()
             quote["author"] = seu_codigo_bonitao
 
@@ -334,20 +334,19 @@ Mas Betina, com tantos frameworks mais conhecidos e estabelecidos, porque raios 
 
 Bom, lembra que lá em cima eu disse que o fato de o scrapy lidar com os requests de maneira assíncrona seria importante para esse tutorial? Então, por esse motivo ele não costuma conversar muito bem com esses frameworks que estão acostumados a fazer os requests de maneira síncrona. 
 
-Klein is a micro-framework for developing production-ready web services with Python, built off Werkzeug and Twisted. O Twisted framework baseado em eventos que ajuda a lidar com assincronia no python.
-
+Klein é um micro-framework para desenvolver serviços Python prontos para ir para produção. O Twisted é um framework baseado em eventos que ajuda a lidar com assincronia no python.
 
 ### Montando o app.py
 
 A sintaxe do Klein é bem parecida com a do Flask. para montar o esqueleto básico da nossa API basta criar um arquivo `app.py` na raiz do projeto. (fora do escopo do scrapy)
 
-```py
+```python
 from klein import Klein
 app = Klein()
 
 @app.route("/")
 def index(request):
-    return "Bom dia flor do dia"
+    return "Bom dia, flor do dia"
 
 app.run("localhost", 8080)
 ```
@@ -380,7 +379,7 @@ app.run("localhost", 8080)
 
 Agora vamos criar um runner para o nosso spider. Isso ira possibilitar a execução programática do nosso spider. Para isso vamos criar o arquivo `spider_runner.py` no mesmo nível do app.py
 
-```py
+```python
 class SpiderRunner(CrawlerRunner):
     def crawl(self, spider, *args, **kwargs):
         self.items = []
@@ -462,7 +461,12 @@ Para finalizar vamos executar nosso projeto em uma aba no terminal:
 
 E rodar um curl passando uma tag como parâmetro!
 
-`$ curl -X POST http://localhost:8080/search -H 'Content-Type: application/json' -H 'Postman-Token: 8990960a-fda0-4902-9594-12e9b56d88f2' -H 'cache-control: no-cache' -d '{"tag":"love"}'`
+```sh
+curl -X POST \
+  http://localhost:8080 \
+  -H 'Content-Type: application/json' \
+  -d '{"tag": "love"}'
+```
 
 Pronto! Você tem uma API Spider rodando!
 
