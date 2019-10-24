@@ -373,6 +373,10 @@ def get_quotes(request):
 app.run("localhost", 8080)
 ```
 
+## Juntando tudo
+
+### Spider Runner
+
 Agora vamos criar um runner para o nosso spider. Isso ira possibilitar a execução programática do nosso spider. Para isso vamos criar o arquivo `spider_runner.py` no mesmo nível do app.py
 
 ```py
@@ -395,11 +399,76 @@ class SpiderRunner(CrawlerRunner):
         return self.items
 ```
 
-## Juntando tudo
+O método crawl será responsável por executar o nosso spider.
+
+### De volta ao Spider
+
+Antes de prosseguirmos com a API, precisamos preparar o nosso spider para receber um parâmetro. Vamos enviar a tag na construção da classe `QuotesSpider`.
+
+```py
+import scrapy
+
+from tutorial.items import Quote
+
+class QuotesSpider(scrapy.Spider):
+    name = "quotes"
+
+    def __init__(self, tag):
+        self.tag = tag
+        self.start_urls = ["http://quotes.toscrape.com/"]
+```
+
+### De volta a API
+
+Agora vamos adicionar a chamada para o spider_runner no nosso endpoint e passar o parametro que o nosso Spider espera....
+
+```py
+@app.route('/search')
+def get_quotes(request):
+    content = json.loads(request.content.read())
+    tag = content.get("tag")
+   
+    runner = SpiderRunner()
+
+    deferred = runner.crawl(QuotesSpider, tag=tag)
+    deferred.addCallback(return_spider_output)
+
+    return deferred
+```
+
+...e criar a callback que passamos parra o `deferred`. Essa callback é necessária para fazer o encoding correto do json.
+
+```py
+def return_spider_output(output):
+    _encoder = ScrapyJSONEncoder(ensure_ascii=False)
+    return _encoder.encode(output)
+```
+
+Para finalizar vamos executar nosso projeto em uma aba no terminal:
+
+`$ python app.py`
+
+E rodar um curl passando uma tag como parâmetro!
+
+`$ curl -X POST http://localhost:8080/search -H 'Content-Type: application/json' -H 'Postman-Token: 8990960a-fda0-4902-9594-12e9b56d88f2' -H 'cache-control: no-cache' -d '{"tag":"poetry"}'`
+
+Pronto! Você tem uma API Spider rodando!
 
 ## Próximos passos
 
+Há diversas melhorias que podem ser feitas, vou listar algumas delas como formas de expandir o projeto e dar continuidade ao aprendizado:
+
+Viu algo que pode melhorar nesse tutorial? Não exite em abrir um PR! Aproveita que ainda dá tempo de garantir a Hacktobertfest!
+
+## Contato
+
+- **site**: https://betinacosta.dev/
+- **twitter**: https://twitter.com/ngasonicunicorn
+- **email**: bmcosta13@gmail.com
+
 ## Referências
+
+
 
 
 
