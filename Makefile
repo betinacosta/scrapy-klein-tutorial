@@ -1,3 +1,3 @@
 setup:
-	pipenv shell
 	pipenv install
+	pipenv shell
