@@ -474,6 +474,10 @@ Há diversas melhorias que podem ser feitas, vou listar algumas delas como forma
 
 - **Tratamento de Erros**. Nosso código está considerando apenas o caminho feliz. É bom adicionarmos tratamentos de erros para quando não encontrarmos alguma tag por exemplo.
 
+- **Buscar mais de uma Tag**. No momento suportamos a busca apenas de uma tag. Que tal procuramos por mais de uma tag?
+
+- **Brincar com a `http://books.toscrape.com/`**. Essa é uma livraria fictícia muito boa para fazer scraping. Você pode tentar buscar todos os livros de um determinado gênero dessa vez...
+
 Viu algo que pode melhorar nesse tutorial? Não exite em abrir um PR! Aproveita que ainda dá tempo de garantir a Hacktoberfest!
 
 ## Contato
@@ -483,6 +487,11 @@ Viu algo que pode melhorar nesse tutorial? Não exite em abrir um PR! Aproveita 
 - **email**: bmcosta13@gmail.com
 
 ## Referências
+
+- [Documentação Scrapy](https://docs.scrapy.org/en/latest/)
+- [Documentação Klein](https://klein.readthedocs.io/en/latest/)
+- [Youtube Scrapinghub](https://www.youtube.com/channel/UCYb6YWTBfD0EB53shkN_6vA)
+- [Web Scraping Sandbox](http://toscrape.com/)
 
 
 
