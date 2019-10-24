@@ -1,13 +1,13 @@
 import scrapy
 
-from bookstore.items import Quote
+from tutorial.tutorial.items import Quote
 
 
-class BooksSpider(scrapy.Spider):
-    name = "books"
+class QuotesSpider(scrapy.Spider):
+    name = "quotes"
 
-    def __init__(self):
-        self.tag = 'inspirational'
+    def __init__(self, tag):
+        self.tag = tag
         self.start_urls = ["http://quotes.toscrape.com/"]
 
     def start_requests(self):

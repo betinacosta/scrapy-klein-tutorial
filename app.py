@@ -3,7 +3,7 @@ import json
 
 import app
 from spider_runner import SpiderRunner
-from bookstore.bookstore.spiders.books_spider import BooksSpider
+from tutorial.tutorial.spiders.quotes_spider import QuotesSpider
 
 from klein import Klein
 app = Klein()
@@ -20,7 +20,7 @@ def get_quotes(request):
    
     runner = SpiderRunner()
 
-    deferred = runner.crawl(BooksSpider, tag=tag)
+    deferred = runner.crawl(QuotesSpider, tag=tag)
     deferred.addCallback(return_spider_output)
 
     return deferred
