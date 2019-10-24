@@ -115,7 +115,7 @@ A nossa mensagem super original junto com a url do site deve ter sido logada no 
 
 Antes de começarmos a colher informações com o nosso spider, precisamos entender melhor a estrutura da página da qual queremos colher informações e nesses momentos precisaremos de um pouco de entendimento de dois dos quatro cavaleiros do apocalipse: HTML e CSS. A forma como iremos colher as informações que necessitamos do site será através de seletores. Vamos dar uma inspecionada no site e ver onde está localizada.
 
-Vamos começar tentando localizar o texto `Quotes to Scrape`. Quando você inspecionar a página verá que ele se encontra dentro do `a` dentro do `h1` que se encontra dentro de uma div com a classe `col-md-8`. Como mostra a imagem abaixo:
+Vamos começar tentando localizar o texto `Quotes to Scrape`. Quando você inspecionar a página verá que ele se encontra dentro do `a` dentro do `h1` que se encontra dentro de uma `div` com a classe `col-md-8`. Como mostra a imagem abaixo:
 
 ![imagem mostrando a página de citações fictícia e o título Quotes to Scrape. Ao lado, o inspect do chrome aberto mostrando a div, classe, a e h1 mencionados no texto acima ](img/inspect.png)
 
@@ -143,7 +143,7 @@ Ok, mas que diabos é isso?
 
 Beleza! Agora que já temos uma noção de como selecionar elementos da página, vamos tentar selecionar as frases de uma determinada tag.
 
-Observando o site e as páginas das tags, vamos que a construção da url dessa página se mantém constante, por esse motivo vamos usar isso ao nosso favor.
+Observando o site e as páginas das tags, vemos que a construção da url dessa página se mantém constante, por esse motivo vamos usar isso ao nosso favor.
 
 `http://quotes.toscrape.com/tag/nome_da_tag`
 
@@ -180,7 +180,7 @@ Agora, vamos analisar a página e ver como podemos pegar o texto e o author das 
 
 ![imagem da página mostrando várias citações uma abaixo da outra contendo citação, a pessoa autora e demais tags](img/quotes-list.png)
 
-Podemos fazer isso selecionando a div que contem as citações e iterando sobre os seus seletores:
+Podemos fazer isso selecionando a `div` que contem as citações e iterando sobre os seus seletores:
 
 ```python
 import scrapy
@@ -213,7 +213,7 @@ Uma pausa para descobrir como obter a informação do autor. Fique a vontade par
 
 Beleza, se tudo der certo (deu sim, fé no pai), nós já temos todas as informações que precisamos. Agora vamos retornar essas informações. Para isso, vamos abrir o arquivo `tutorial/tutorial/items.py` e criar um Item. 
 
-Para definir uma saída formatada o Scrapy oferece as Item classes. Objetos do tipo Item são simples containers para coletar os dados. Eles oferencem uma API parecida com um dicionário do Python com uma linguagem conveniente para declarar seus campos disponíveis.
+Para definir uma saída formatada o Scrapy oferece a classe Item. Objetos do tipo Item são simples containers para coletar os dados. Eles oferencem uma API parecida com um dicionário do Python com uma linguagem conveniente para declarar seus campos disponíveis.
 
 ```python
 import scrapy
@@ -292,7 +292,11 @@ Pronto! Agora se rodarmos o nosso spider com `scrapy crawl quotes` vamos ver que
 
 ![imagem mostrando o terminal com as informações sobre as citações](img/quotes-terminal.png)
 
+<<<<<<< Updated upstream
 Para finalizar o nosso crawler com chave de ouro, temos um outro detalhe importante para verificar: paginação. É necessário "repetir" esse procedimento para as próximas páginas de citações caso elas existam. Para isso, vamos adicionar uma lógica de paginação depois do nosso `for` e adicionar a variável `start_urls` no nosso `__init__`. Essa variável é necessária para que o método `response.urljoin` utilizado na paginação consiga se achar corretamente.
+=======
+Para finalizar o nosso crawler com chave de ouro, temos um outro detalhe importante para verificar: paginação. É necessário "repetir" esse procedimento para as próximos páginas de citações caso elas existam. Para isso, vamos adicionar uma lógica de paginação depois do nosso `for` e adicionar a variável `start_urls` no nosso `__init__`. Essa variável é necessária para que o método `response.urljoin`, utilizado na paginação, consiga se achar corretamente.
+>>>>>>> Stashed changes
 
 ```python
 import scrapy
@@ -380,7 +384,7 @@ app = Klein()
 
 @app.route("/")
 def index(request):
-    return "Bom dia flor do dia"
+    return "Bom dia, flor do dia"
 
 @app.route('/search')
 def get_quotes(request):
