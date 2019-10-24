@@ -292,11 +292,7 @@ Pronto! Agora se rodarmos o nosso spider com `scrapy crawl quotes` vamos ver que
 
 ![imagem mostrando o terminal com as informações sobre as citações](img/quotes-terminal.png)
 
-<<<<<<< Updated upstream
-Para finalizar o nosso crawler com chave de ouro, temos um outro detalhe importante para verificar: paginação. É necessário "repetir" esse procedimento para as próximas páginas de citações caso elas existam. Para isso, vamos adicionar uma lógica de paginação depois do nosso `for` e adicionar a variável `start_urls` no nosso `__init__`. Essa variável é necessária para que o método `response.urljoin` utilizado na paginação consiga se achar corretamente.
-=======
 Para finalizar o nosso crawler com chave de ouro, temos um outro detalhe importante para verificar: paginação. É necessário "repetir" esse procedimento para as próximos páginas de citações caso elas existam. Para isso, vamos adicionar uma lógica de paginação depois do nosso `for` e adicionar a variável `start_urls` no nosso `__init__`. Essa variável é necessária para que o método `response.urljoin`, utilizado na paginação, consiga se achar corretamente.
->>>>>>> Stashed changes
 
 ```python
 import scrapy
