@@ -515,6 +515,10 @@ Viu algo que pode melhorar nesse tutorial? Não exite em abrir um PR! Aproveita 
 - [Youtube Scrapinghub](https://www.youtube.com/channel/UCYb6YWTBfD0EB53shkN_6vA)
 - [Web Scraping Sandbox](http://toscrape.com/)
 
+## Agradecimentos
+
+Agradecimentos especiais ao @lipemorais pela revisão e o suporte emocional pelo segundo ano seguido <3
+
 
 
 
