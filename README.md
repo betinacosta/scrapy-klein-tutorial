@@ -7,10 +7,14 @@ Hoje vamos desenvolver uma API para buscar frases por tags no site http://quotes
 ### Exemplo
 
 ```sh
-`$ curl -X POST http://localhost:8080/search -H 'Content-Type: application/json' -H 'Postman-Token: 8990960a-fda0-4902-9594-12e9b56d88f2' -H 'cache-control: no-cache' -d '{"tag":"love"}'`
+curl -X POST \
+  http://localhost:8080/search \
+  -d '{"tag": "inspirational"}'
 ```
 
-`>> [{"text": "\u201cThere are only two ways to live your life. One is as though nothing is a miracle. The other is as though everything is a miracle.\u201d", "author": "Albert Einstein"}]`
+```sh
+>> [{"text": "\u201cThere are only two ways to live your life. One is as though nothing is a miracle. The other is as though everything is a miracle.\u201d", "author": "Albert Einstein"}]
+```
 
 ## Pré-Requisitos
 
@@ -23,7 +27,7 @@ Para desenvolver o nosso crawler nós vamos utilizar o Scrapy e o site fictício
 
 ### O que é o Scrapy?
 
-Scrapy (se pronuncia iscreipi) é um web crawling framework de código aberto e gratuito, escrito em Python. Originalmente projetado para fazer web scraping, também pode ser usar para extração de dados de APIs ou como um web crawler de propósito geral. É mantido por Scrapinghub Ltda, uma empresa de serviços e desenvolvimento de web scraping.
+Scrapy (se pronuncia iscreipi - sim eu também falei errado a vida toda) é um web crawling framework de código aberto e gratuito, escrito em Python. Originalmente projetado para fazer web scraping, também pode ser usar para extração de dados de APIs ou como um web crawler de propósito geral. É mantido por Scrapinghub Ltda, uma empresa de serviços e desenvolvimento de web scraping.
 
 ### Por que usar o Scrapy?
 
@@ -31,6 +35,8 @@ Scrapy (se pronuncia iscreipi) é um web crawling framework de código aberto e 
 - É fácil de construir e escalar para projetos grande de crawling.
 - Possui uma ferramenta que o acompanha chamada Selectors, para extração de dados de sites.
 - Lida com chamadas de maneira assíncrona e rápida.
+
+Esse último ponto vai ser importante para nós no futuro
 
 ### Mãos a obra
 
@@ -100,6 +106,7 @@ O que estamos fazendo no método parse no momento é simplesmente logar a url do
 Para rodar a nossa spider vamos no entra no projeto e executar o spider:
 
 `$ cd tutorial`
+
 `$ scrapy crawl quotes`
 
 A nossa mensagem super original junto com a url do site deve ter sido logada no nível de `DEBUG`
@@ -112,7 +119,7 @@ Vamos começar tentando localizar o texto `Quotes to Scrape`. Quando você inspe
 
 ![imagem mostrando a página de citações fictícia e o título Quotes to Scrape. Ao lado, o inspect do chrome aberto mostrando a div, classe, a e h1 mencionados no texto acima ](img/inspect.png)
 
-Para testar se conseguimos selecionar esse texto através da classe e da tag, vamos utilizar uma ferramenta muito util do scrapy: o scrapy shell:
+Para testar se conseguimos selecionar esse texto através da classe e das tags, vamos utilizar uma ferramenta muito util do scrapy: o scrapy shell:
 
 `$ scrapy shell http://quotes.toscrape.com/`
 
@@ -124,7 +131,7 @@ Funcionou \o/
 
 ![imagem com uma menina comemorando muito feliz com a família até que ela pega uma travessa da mesa e quebra para demonstrar sua felicidade](https://media.giphy.com/media/XGSqXkATD3Akw/giphy.gif)
 
-Ok, mas que porra é essa? 
+Ok, mas que diabos é isso? 
 
 `response.css()` é o que utilizamos para selecionar elementos da página com base em um seletor css. Ele deve receber o caminho para o elemento desejado.
 
@@ -242,6 +249,7 @@ class QuotesSpider(scrapy.Spider):
         quotes_selectors = response.css("div.quote")
 
         for selector in quotes_selectors:
+            quote = Quote()
 
             quote["text"] = selector.css("span.text::text").extract_first()
             quote["author"] = seu_codigo_bonitao
@@ -273,6 +281,7 @@ class QuotesSpider(scrapy.Spider):
 
         for selector in quotes_selectors:
             quote = Quote()
+
             quote["text"] = selector.css("span.text::text").extract_first()
             quote["author"] = seu_codigo_bonitao
 
@@ -283,7 +292,7 @@ Pronto! Agora se rodarmos o nosso spider com `scrapy crawl quotes` vamos ver que
 
 ![imagem mostrando o terminal com as informações sobre as citações](img/quotes-terminal.png)
 
-Para finalizar o nosso crawler com chave de ouro, temos um outro detalhe importante para verificar: paginação. É necessário "repetir" esse procedimento para as próximos páginas de citações caso elas existam. Para isso, vamos adicionar uma lógica de paginação depois do nosso `for` e adicionar a variável `start_urls`no nosso `__init__`. Essa variável é necessária para que o método `response.urljoin` utilizado na paginação consiga se achar corretamente.
+Para finalizar o nosso crawler com chave de ouro, temos um outro detalhe importante para verificar: paginação. É necessário "repetir" esse procedimento para as próximas páginas de citações caso elas existam. Para isso, vamos adicionar uma lógica de paginação depois do nosso `for` e adicionar a variável `start_urls` no nosso `__init__`. Essa variável é necessária para que o método `response.urljoin` utilizado na paginação consiga se achar corretamente.
 
 ```python
 import scrapy
@@ -309,6 +318,7 @@ class QuotesSpider(scrapy.Spider):
         quotes_selectors = response.css("div.quote")
 
         for selector in quotes_selectors:
+            quote = Quote()
 
             quote["text"] = selector.css("span.text::text").extract_first()
             quote["author"] = seu_codigo_bonitao
@@ -334,7 +344,7 @@ Mas Betina, com tantos frameworks mais conhecidos e estabelecidos, porque raios 
 
 Bom, lembra que lá em cima eu disse que o fato de o scrapy lidar com os requests de maneira assíncrona seria importante para esse tutorial? Então, por esse motivo ele não costuma conversar muito bem com esses frameworks que estão acostumados a fazer os requests de maneira síncrona. 
 
-Klein é um micro-framework para desenvolver serviços Python prontos para ir para produção. O Twisted é um framework baseado em eventos que ajuda a lidar com assincronia no python.
+Klein é um micro-framework para desenvolver serviços Python prontos para ir para produção. O Twisted é um framework baseado em eventos que ajuda a lidar com assincronia.
 
 ### Montando o app.py
 
@@ -346,7 +356,7 @@ app = Klein()
 
 @app.route("/")
 def index(request):
-    return "Bom dia, flor do dia"
+    return "Bom dia, flor do dia. Daqui a pouco tem almoço"
 
 app.run("localhost", 8080)
 ```
@@ -354,6 +364,13 @@ app.run("localhost", 8080)
 Vamos rodar esse pedaço para ver se funciona antes de seguir em frente:
 
 `$ python app.py`
+
+E em outra aba do terminal:
+
+```sh
+curl -X GET \
+  http://localhost:8080/
+```
 
 Agora vamos criar o endpoint para enviar uma tag parar ser pesquisada:
 
@@ -420,7 +437,7 @@ class QuotesSpider(scrapy.Spider):
 
 ### De volta a API
 
-Agora vamos adicionar a chamada para o spider_runner no nosso endpoint e passar o parametro que o nosso Spider espera....
+Agora vamos adicionar a chamada para o spider_runner no nosso endpoint e passar o parâmetro que o nosso Spider espera....
 
 ```py
 @app.route('/search')
@@ -463,8 +480,7 @@ E rodar um curl passando uma tag como parâmetro!
 
 ```sh
 curl -X POST \
-  http://localhost:8080 \
-  -H 'Content-Type: application/json' \
+  http://localhost:8080/search \
   -d '{"tag": "love"}'
 ```
 
@@ -479,6 +495,8 @@ Há diversas melhorias que podem ser feitas, vou listar algumas delas como forma
 - **Tratamento de Erros**. Nosso código está considerando apenas o caminho feliz. É bom adicionarmos tratamentos de erros para quando não encontrarmos alguma tag por exemplo.
 
 - **Buscar mais de uma Tag**. No momento suportamos a busca apenas de uma tag. Que tal procuramos por mais de uma tag?
+
+- **Retornar detalhes do Autor**. Você pode tentar retornar mais detalhes do autor junto com as frases
 
 - **Brincar com a `http://books.toscrape.com/`**. Essa é uma livraria fictícia muito boa para fazer scraping. Você pode tentar buscar todos os livros de um determinado gênero dessa vez...
 
