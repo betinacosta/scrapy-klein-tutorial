@@ -31,7 +31,7 @@ Scrapy (in case you are wondering, it's pronounced _scray-pee_) is a free and op
 
 ### Why Scrapy?
 
-- It;s open source and free to use;
+- It's open source and free to use;
 - It's easy to build and scale;
 - It has a tool called Selector for data extraction
 - Handles calls asynchronously and quickly.
@@ -521,8 +521,8 @@ Did you see anything that can be improved in this tutorial? Don't hesitate to op
 
 ## References
 
-- [Documentação Scrapy](https://docs.scrapy.org/en/latest/)
-- [Documentação Klein](https://klein.readthedocs.io/en/latest/)
+- [Scrapy Documentation](https://docs.scrapy.org/en/latest/)
+- [Klein Documentation](https://klein.readthedocs.io/en/latest/)
 - [Youtube Scrapinghub](https://www.youtube.com/channel/UCYb6YWTBfD0EB53shkN_6vA)
 - [Web Scraping Sandbox](http://toscrape.com/)
 
