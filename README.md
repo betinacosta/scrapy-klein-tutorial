@@ -11,7 +11,7 @@ This tutorial is available in the following languages:
 
 ## Special Thanks
 
-- Python Brasil for giving me this amazing opportunity;
+- Python Brasil and PyCon Colombia for giving me the amazing opportunity of presenting this tutorial;
 - [@lipemorais](https://github.com/lipemorais/) for the emocional support for the second year in a row <3
 
 # Desenvolvendo um Crawler API com Scrapy e Klein
@@ -27,5 +27,5 @@ Esse tutorial está disponível nos seguintes idiomas:
 
 ## Agradecimentos
 
-- Python Brasil, por ter me dado essa oportunidade;
+- Python Brasil e PyCon Colombia, por terem me dado a oportunidade incrível de apresentar esse tutorial;
 - [@lipemorais](https://github.com/lipemorais/) pelo apoio emocional pelo segundo ano seguido <3
