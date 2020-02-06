@@ -110,57 +110,59 @@ class QuotesSpider(scrapy.Spider):
         self.log(">>>>>>>>>>>> " + response.url + " <<<<<<<<<<<<<<")
 ```
 
-Okay, what's going on in that file? The method `start_requests` defines (as the name implies) where our spider will start its activities on the website or variable websites por onde o nosso spider vai começar suas atividades no site ou sites definidos na variável `urls` e qual método aplicar nesses sites, definidos na `callback`.
+Okay, what's going on in that file? The method `start_requests` defines (as the name implies) where our spider will start its activities on the website or websites defined in the variable `urls` and what functions to apply on those websites, defined in the `callback`.
 
-O que estamos fazendo no método parse no momento é simplesmente logar a url do site visitado pelo nosso spider, mas futuramente iramos colher informações da página.
+What we are doing in the `parse` method at the moment is simply logging the website url visited by our spider, but in the future we will collect information from the page.
 
-Para rodar a nossa spider vamos no entra no projeto e executar o spider:
+To run our spider, we will go to project folder and execute our spider:
 
 `$ cd tutorial`
 
 `$ scrapy crawl quotes`
 
-A nossa mensagem super original junto com a url do site deve ter sido logada no nível de `DEBUG`
+Our very creative message, along with the website's url, should have been logged at the `DEBUG` level.
 
-#### Entendo a página
+#### Understanding the Page
 
-Antes de começarmos a colher informações com o nosso spider, precisamos entender melhor a estrutura da página da qual queremos colher informações e nesses momentos precisaremos de um pouco de entendimento de dois dos quatro cavaleiros do apocalipse: HTML e CSS. A forma como iremos colher as informações que necessitamos do site será através de seletores. Vamos dar uma inspecionada no site e ver onde está localizada.
+Before we start collecting information with our spider, we need to better understand the structure of the page from which we want to collect information, and for this we will need understand a little about two of the four horsemen: HTML and CSS. 
 
-Vamos começar tentando localizar o texto `Quotes to Scrape`. Quando você inspecionar a página verá que ele se encontra dentro do `a` dentro do `h1` que se encontra dentro de uma `div` com a classe `col-md-8`. Como mostra a imagem abaixo:
+We will collect the information we need from the website through selectors. Let's take a look at the website and see where everything is located.
 
-![imagem mostrando a página de citações fictícia e o título Quotes to Scrape. Ao lado, o inspect do chrome aberto mostrando a div, classe, a e h1 mencionados no texto acima ](img/inspect.png)
+Let's start by the text `Quotes to Scrape`. When you inspect the page you will see that it's inside the `a` tag, inside the `h1` tag, which is found within a `div` with the class `col-md-8`. You can see better in the image bellow:
 
-Para testar se conseguimos selecionar esse texto através da classe e das tags, vamos utilizar uma ferramenta muito util do scrapy: o scrapy shell:
+![image showing the fictional quote page and the title Quotes to Scrape. Beside, the open chrome inspect showing the div, class, a and h1 mentioned in the text above ](img/inspect.png)
+
+To test if we can select this text by its class and tags, we will use a very useful scrapy tool: the scrapy shell:
 
 `$ scrapy shell http://quotes.toscrape.com/`
 
-Esse comando irá baixar a página e nos fornecer um objeto `response` que nos permitirá fazer algumas operações. Para verificar se conseguimos selecionar o texto que desejamos, vamos executar:
+This command will download the page and provide us a `response` object that will allow us to do some operations. To check if we can select the text we want, let's run:
 
 `$ response.css("div.col-md-8>h1>a::text").extract_first()`
 
-Funcionou \o/
+It worked! \o/
 
-![imagem com uma menina comemorando muito feliz com a família até que ela pega uma travessa da mesa e quebra para demonstrar sua felicidade](https://media.giphy.com/media/XGSqXkATD3Akw/giphy.gif)
+![image with a girl celebrating very happily with her family until she picks up a plate from the table and breaks it on the floor to show her happiness](https://media.giphy.com/media/XGSqXkATD3Akw/giphy.gif)
 
-Ok, mas que diabos é isso?
+Ok, but what the hell is that?
 
-`response.css()` é o que utilizamos para selecionar elementos da página com base em um seletor css. Ele deve receber o caminho para o elemento desejado.
+`response.css()` is what we use to select page elements based on a css selector. It must receive the path to the desired element.
 
-`div.page-header>h1>a::text` diz que queremos o texto do `a` que está dentro do `h1` que se encontra dentro da `div` que possui a classe `col-md-8`
+`div.page-header>h1>a::text` says that we want the `a` tag text that is inside the` h1` tag that is inside the `div` that has the class `col-md-8`.
 
-`extract_first()` response.css nos retornará um `selector` e para extrair as informações que precisamos utilizamos o método `extract`. Porém ele nos retornará uma lista. Nesse caso específico como temos apenas um item como conteúdo, podemos usar uma variação desse método, o `extract_first` para pegarmos a informação desejada.
+`extract_first()` response.css will return a `selector` and to extract the information we need from this selector we use the` extract` method. However, it will return a list to us. In this specific case, as we only have one item as content, we can use a variation of this method, the `extract_first` to get the information we want.
 
-#### Pegando as frases por tag
+#### Getting the quotes by tag
 
-Beleza! Agora que já temos uma noção de como selecionar elementos da página, vamos tentar selecionar as frases de uma determinada tag.
+Nice! Now that we have a sense of how to select elements of the page, let's try to select the quotes by a given tag.
 
-Observando o site e as páginas das tags, vemos que a construção da url dessa página se mantém constante, por esse motivo vamos usar isso ao nosso favor.
+Looking at the website and the tag pages, we see that the construction of the page url remains constant, so we will use this to our advantage.
 
-`http://quotes.toscrape.com/tag/nome_da_tag`
+`http://quotes.toscrape.com/tag/tag_name`
 
-Obs.: Há alguns problemas com essa abordagem, como por exemplo ser baseada no fato de que as urls sempre seguirão esse padrão, mas esse não é o objetivo do tutorial.
+__Note__: There are some problems with this approach, such as being based on the fact that urls will always follow this pattern, but that isn't the purpose of the tutorial.
 
-Nesse primeiro momento, vamos assumir uma tag fixa. Posteriormente, receberemos a tag como parâmetro na nossa API.
+For now, we will consider a fixed tag. Later, we will receive the tag as a parameter in our API.
 
 ```python
 import scrapy
@@ -185,13 +187,13 @@ class QuotesSpider(scrapy.Spider):
 
 ```
 
-O que fizemos foi adicionar uma tag fixa no `__init__` e utilizamos ela para montar a url no `start_requests`.
+What we did was add a fixed tag at `__init__` and we used it to build the url in` start_requests`.
 
-Agora, vamos analisar a página e ver como podemos pegar o texto e o author das citações.
+Now, let's analyze the page and see how we can get the quote and its author.
 
-![imagem da página mostrando várias citações uma abaixo da outra contendo citação, a pessoa autora e demais tags](img/quotes-list.png)
+![image of the page showing several quotes one below the other containing quote, the author and other tags](img/quotes-list.png)
 
-Podemos fazer isso selecionando a `div` que contem as citações e iterando sobre os seus seletores:
+We can do this by selecting the `div` containing the quotes and iterating over their selectors:
 
 ```python
 import scrapy
@@ -220,11 +222,11 @@ class QuotesSpider(scrapy.Spider):
             author = ?
 ```
 
-Uma pausa para descobrir como obter a informação do autor. Fique a vontade para usar o scrapy shell e pedir ajuda para a minha pessoa :)
+A break to find out how to obtain the author's information. Feel free to use the scrapy shell and ask me for help if you need :)
 
-Beleza, se tudo der certo (deu sim, fé no pai), nós já temos todas as informações que precisamos. Agora vamos retornar essas informações. Para isso, vamos abrir o arquivo `tutorial/tutorial/items.py` e criar um Item.
+Okay, if everything goes well (and it will, faith in our goddess Beyoncé), we already have all the information we need. Now let's return this information. For that, we will open the file `tutorial/tutorial/items.py` and create an Item.
 
-Para definir uma saída formatada o Scrapy oferece a classe Item. Objetos do tipo Item são simples containers para coletar os dados. Eles oferencem uma API parecida com um dicionário do Python com uma linguagem conveniente para declarar seus campos disponíveis.
+To define a formatted output, Scrapy offers the Item class. Item-type objects are simple containers for collecting data. They offer an API similar to a Python dictionary with a convenient language for declaring their available fields.
 
 ```python
 import scrapy
@@ -235,7 +237,7 @@ class Quote(scrapy.Item):
     author = scrapy.Field()
 ```
 
-E agora vamos importar no `quotes_spider.py` e utilizar no lugar das variáveis.
+And now we will import it into `quotes_spider.py` and use it instead of variables.
 
 ```python
 import scrapy
@@ -263,10 +265,10 @@ class QuotesSpider(scrapy.Spider):
             quote = Quote()
 
             quote["text"] = selector.css("span.text::text").extract_first()
-            quote["author"] = seu_codigo_bonitao
+            quote["author"] = your_beautiful_code
 ```
 
-Beleza e como retornamos isso? A spider do Scrapy costuma gerar dicionários contendo os dados extraídos da página. Para fazer isso nós usamo o `yield` do Python no callback.
+Cool, and how do we return it? The Scrapy spider usually generates dictionaries containing the data extracted from the page. To do this we use Python's `yield` in the callback.
 
 ```python
 import scrapy
@@ -299,11 +301,11 @@ class QuotesSpider(scrapy.Spider):
             yield quote
 ```
 
-Pronto! Agora se rodarmos o nosso spider com `scrapy crawl quotes` vamos ver que as informações foram coletadas com sucesso.
+Done! Now if we run our spider with `scrapy crawl quotes` we will see that the information has been successfully collected.
 
-![imagem mostrando o terminal com as informações sobre as citações](img/quotes-terminal.png)
+![image showing the terminal with the information about the quotes](img/quotes-terminal.png)
 
-Para finalizar o nosso crawler com chave de ouro, temos um outro detalhe importante para verificar: paginação. É necessário "repetir" esse procedimento para as próximos páginas de citações caso elas existam. Para isso, vamos adicionar uma lógica de paginação depois do nosso `for` e adicionar a variável `start_urls` no nosso `__init__`. Essa variável é necessária para que o método `response.urljoin`, utilizado na paginação, consiga se achar corretamente.
+To finish our spider with style, we have another important detail to check: pagination. It is necessary to "repeat" this process for the next pages if they exist. For this, we will add a pagination logic after our `for` and add the variable` start_urls` in our `__init__`. This variable is necessary for the `response.urljoin` method used in pagination, can find itself.
 
 ```python
 import scrapy
@@ -332,7 +334,7 @@ class QuotesSpider(scrapy.Spider):
             quote = Quote()
 
             quote["text"] = selector.css("span.text::text").extract_first()
-            quote["author"] = seu_codigo_bonitao
+            quote["author"] = your_beautiful_code
 
             yield quote
 
@@ -343,23 +345,23 @@ class QuotesSpider(scrapy.Spider):
             yield scrapy.Request(url=next_page_url, callback=self.parse)
 ```
 
-Pronto! Com isso finalizamos nosso crawler e podemos partir para a API!
+Done! With that we finish our spider and we can go to the API!
 
-## Desenvolvendo a API
+## Developing the API
 
-Agora que já temos o nosso spider pronto! Podemos seguir para o desenvolvimento da API com o Klein!
+Now that we have our spider ready! We can proceed to developing the API with Klein!
 
-### Por que o Klein?
+### Why Klein?
 
-Mas Betina, com tantos frameworks mais conhecidos e estabelecidos, porque raios usar o Klein e não o Flask, o Bottle ou até mesmo o Django (você quer overkill, @?)?
+But Betina, with so many more well-known and established frameworks, why the heck use Klein and not Flask, Bottle or even Django (do you want overkill, @?)?
 
-Bom, lembra que lá em cima eu disse que o fato de o scrapy lidar com os requests de maneira assíncrona seria importante para esse tutorial? Então, por esse motivo ele não costuma conversar muito bem com esses frameworks que estão acostumados a fazer os requests de maneira síncrona.
+Well, remember I said that the fact that scrapy handles requests asynchronously would be important for this tutorial? So, for that reason it doesn't usually talk very well with those frameworks that are used to making requests synchronously.
 
-Klein é um micro-framework para desenvolver serviços Python prontos para ir para produção. O Twisted é um framework baseado em eventos que ajuda a lidar com assincronia.
+Klein is a micro-framework for developing Python services production ready. Twisted is an event-based framework that helps to deal with asynchrony.
 
-### Montando o app.py
+### Building app.py
 
-A sintaxe do Klein é bem parecida com a do Flask. para montar o esqueleto básico da nossa API basta criar um arquivo `app.py` na raiz do projeto. (fora do escopo do scrapy)
+Klein's syntax is very similar to Flask's. to build the basic skeleton of our API just create an `app.py` file at the root of the project. (outside the scrapy scope)
 
 ```python
 from klein import Klein
@@ -367,23 +369,23 @@ app = Klein()
 
 @app.route("/")
 def index(request):
-    return "Bom dia, flor do dia. Daqui a pouco tem almoço"
+    return "Good morning sunshine, soon there will be lunch!"
 
 app.run("localhost", 8080)
 ```
 
-Vamos rodar esse pedaço para ver se funciona antes de seguir em frente:
+Let's run this piece to see if it works before moving on:
 
 `$ python app.py`
 
-E em outra aba do terminal:
+And in another tab of the terminal:
 
 ```sh
 curl -X GET \
   http://localhost:8080/
 ```
 
-Agora vamos criar o endpoint para enviar uma tag parar ser pesquisada:
+Now let's create the endpoint to send a tag to be searched:
 
 ```py
 from klein import Klein
@@ -391,7 +393,7 @@ app = Klein()
 
 @app.route("/")
 def index(request):
-    return "Bom dia, flor do dia"
+    return "Good morning sunshine, soon there will be lunch!"
 
 @app.route('/search')
 def get_quotes(request):
@@ -401,11 +403,11 @@ def get_quotes(request):
 app.run("localhost", 8080)
 ```
 
-## Juntando tudo
+## Putting it all together
 
 ### Spider Runner
 
-Agora vamos criar um runner para o nosso spider. Isso ira possibilitar a execução programática do nosso spider. Para isso vamos criar o arquivo `spider_runner.py` no mesmo nível do app.py
+Now let's create a runner for our spider. This will enable the programmatic execution of our spider. For this we will create the file `spider_runner.py` at the same level as the app.py
 
 ```python
 class SpiderRunner(CrawlerRunner):
@@ -427,11 +429,11 @@ class SpiderRunner(CrawlerRunner):
         return self.items
 ```
 
-O método crawl será responsável por executar o nosso spider.
+The crawl method will be responsible for running our spider.
 
-### De volta ao Spider
+### Back to the Spider
 
-Antes de prosseguirmos com a API, precisamos preparar o nosso spider para receber um parâmetro. Vamos enviar a tag na construção da classe `QuotesSpider`.
+Before proceeding with the API, we need to prepare our spider to receive a parameter. We will send the tag in the construction of the `QuotesSpider` class.
 
 ```py
 import scrapy
@@ -446,9 +448,9 @@ class QuotesSpider(scrapy.Spider):
         self.start_urls = ["http://quotes.toscrape.com/"]
 ```
 
-### De volta a API
+### Back to the API
 
-Agora vamos adicionar a chamada para o spider_runner no nosso endpoint e passar o parâmetro que o nosso Spider espera....
+Now let's add a call to the spider_runner in our endpoint and pass the parameter that our Spider expects ...
 
 ```py
 @app.route('/search')
@@ -464,7 +466,7 @@ def get_quotes(request):
     return deferred
 ```
 
-...e criar a callback que passamos parra o `deferred`. Essa callback é necessária para fazer o encoding correto do json.
+... and create the callback we passed to the deferred. This callback is necessary to do the correct json encoding.
 
 ```py
 def return_spider_output(output):
@@ -472,7 +474,7 @@ def return_spider_output(output):
     return _encoder.encode(output)
 ```
 
-Não se esqueça de adicionar os imports!
+Don't forget adding the imports!
 
 ```py
 from scrapy.utils.serialize import ScrapyJSONEncoder
@@ -483,11 +485,11 @@ from spider_runner import SpiderRunner
 from tutorial.tutorial.spiders.quotes_spider import QuotesSpider
 ```
 
-Para finalizar vamos executar nosso projeto em uma aba no terminal:
+Finally, let's execute our project in a tab on the terminal:
 
 `$ python app.py`
 
-E rodar um curl passando uma tag como parâmetro!
+And run a curl passing a tag as a parameter!
 
 ```sh
 curl -X POST \
@@ -495,37 +497,37 @@ curl -X POST \
   -d '{"tag": "love"}'
 ```
 
-Pronto! Você tem uma API Spider rodando!
+Done! You have a Spider API running!
 
-## Próximos passos
+## Next Steps
 
-Há diversas melhorias que podem ser feitas, vou listar algumas delas como formas de expandir o projeto e dar continuidade ao aprendizado:
+There are several improvements that can be made, I will list some of them as ways to expand the project and continue learning:
 
-- **Testes!** Nesse tutorial nós usamos o famoso TDD (Teste Depois do Deploy). Isso não é muito legal. Uma boa forma de melhorar esse código é adicionando testes nele. Uma forma de testar nosso spider unitariamente é utilizando stubs para as páginas.
+- **Tests!** In this tutorial we kind turned the blind eye for the lack of tests. This isn't a good practice. A good way to improve this code is adding tests to it. One way to test our spider unitarily is by using stubs for the pages, this will make development way easier and safe.
 
-- **Tratamento de Erros**. Nosso código está considerando apenas o caminho feliz. É bom adicionarmos tratamentos de erros para quando não encontrarmos alguma tag por exemplo.
+- **Error Handling**. Our code is only considering the happy path. It’s good to add error handling when we don’t find a tag for example
 
-- **Buscar mais de uma Tag**. No momento suportamos a busca apenas de uma tag. Que tal procuramos por mais de uma tag?
+- **Search for more than 1 Tag**. We currently support searching for only one tag. How about we look for more tags?
 
-- **Retornar detalhes do Autor**. Você pode tentar retornar mais detalhes do autor junto com as frases
+- **Return author's details**. You can try returning more details from the author along with the sentences.
 
-- **Brincar com a `http://books.toscrape.com/`**. Essa é uma livraria fictícia muito boa para fazer scraping. Você pode tentar buscar todos os livros de um determinado gênero dessa vez...
+- **Play with `http://books.toscrape.com/`**. This is a very good fictional bookstore for scraping. You can try to search all books of a certain genre this time ...
 
-Viu algo que pode melhorar nesse tutorial? Não exite em abrir um PR! Aproveita que ainda dá tempo de garantir a Hacktoberfest!
+Did you see anything that can be improved in this tutorial? Don't hesitate to open a PR!
 
-## Contato
+## Contact
 
-- **site**: https://betinacosta.dev/
+- **website**: https://betinacosta.dev/
 - **twitter**: https://twitter.com/ngasonicunicorn
 - **email**: bmcosta13@gmail.com
 
-## Referências
+## References
 
 - [Documentação Scrapy](https://docs.scrapy.org/en/latest/)
 - [Documentação Klein](https://klein.readthedocs.io/en/latest/)
 - [Youtube Scrapinghub](https://www.youtube.com/channel/UCYb6YWTBfD0EB53shkN_6vA)
 - [Web Scraping Sandbox](http://toscrape.com/)
 
-## Agradecimentos
+## Special Thanks
 
-Agradecimentos especiais ao @lipemorais pela revisão e o suporte emocional pelo segundo ano seguido <3
+Special thanks to [@lipemorais](https://github.com/lipemorais/) for reviewing the material and giving me emotional support for the second year in a row!
