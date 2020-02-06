@@ -2,9 +2,7 @@
 
 ## Scope
 
-Today we will develop an API to search phrases by tags on the site http://quotes.toscrape.com/ . Nossa API deve receber uma tag como parâmetro, fazer o scraping da página e nos retornar um `json` contendo uma lista com as frases e autores pertencentes aquela tag.
-
-Our API should receive a tag as parameter, scrap the page and return a `json` containing a list with the phrases and authors that belong to that tag.
+Today we will develop an API to search phrases by tags on the site http://quotes.toscrape.com/ . Our API should receive a tag as parameter, scrap the page and return a `json` containing a list with the phrases and authors that belong to that tag.
 
 ### Example
 
