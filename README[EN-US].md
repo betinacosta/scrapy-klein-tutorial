@@ -408,6 +408,11 @@ app.run("localhost", 8080)
 Now let's create a runner for our spider. This will enable the programmatic execution of our spider. For this we will create the file `spider_runner.py` at the same level as the app.py
 
 ```python
+
+from scrapy import signals
+from scrapy.crawler import CrawlerRunner
+from scrapy.utils.serialize import ScrapyJSONEncoder
+
 class SpiderRunner(CrawlerRunner):
     def crawl(self, spider, *args, **kwargs):
         self.items = []
@@ -436,7 +441,7 @@ Before proceeding with the API, we need to prepare our spider to receive a param
 ```py
 import scrapy
 
-from tutorial.items import Quote
+from tutorial.tutorial.items import Quote
 
 class QuotesSpider(scrapy.Spider):
     name = "quotes"
