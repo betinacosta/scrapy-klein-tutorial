@@ -76,7 +76,7 @@ $ pipenv shell
 This command created a folder called `tutorial` with the following files:
 
 - **scrapy.cfg**: deploy settings file
-- **items.py**: project "itens" definition file
+- **items.py**: project "items" definition file
 - **middlewares.py** : project middlewares file
 - **pipelines.py**: project pipelines file
 - **settings.py**: project settings file
@@ -146,7 +146,7 @@ Ok, but what the hell is that?
 
 `response.css()` is what we use to select page elements based on a css selector. It must receive the path to the desired element.
 
-`div.page-header>h1>a::text` says that we want the `a` tag text that is inside the` h1` tag that is inside the `div` that has the class `col-md-8`.
+`div.col-md-8>h1>a::text` says that we want the `a` tag text that is inside the` h1` tag that is inside the `div` that has the class `col-md-8`.
 
 `extract_first()` response.css will return a `selector` and to extract the information we need from this selector we use the` extract` method. However, it will return a list to us. In this specific case, as we only have one item as content, we can use a variation of this method, the `extract_first` to get the information we want.
 
